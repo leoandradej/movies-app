@@ -1,25 +1,9 @@
 import { useEffect, useState } from "react";
 import Search from "./components/Search";
-
-interface ApiOptions {
-  method: string;
-  headers: {
-    accept: string;
-    Authorization: string;
-  };
-}
-
-interface Movie {
-  id: number;
-  title: string;
-}
-
-interface MovieResponse {
-  page: number;
-  results: Movie[];
-  total_pages: number;
-  total_results: number;
-}
+import Spinner from "./components/Spinner";
+import MovieCard from "./components/MovieCard";
+import type { Movie, MovieResponse } from "./types/movies.types";
+import type { ApiOptions } from "./types/api.types";
 
 const API_BASE_URL = "https://api.themoviedb.org/3/";
 const API_KEY = import.meta.env.VITE_TMDB_API_KEY;
@@ -72,25 +56,23 @@ const App = () => {
       <div className="pattern"></div>
       <div className="wrapper">
         <header>
+          <img src="./hero.png" alt="Hero Banner" />
           <h1>
-            <img src="./hero.png" alt="Hero Banner" />
             Find <span className="text-gradient">Movies</span> You'll Enjoy
             Without the Hassle
           </h1>
           <Search searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </header>
         <section className="all-movies">
-          <h2>All Movies</h2>
+          <h2 className="mt-[3rem]">All Movies</h2>
           {isLoading ? (
-            <p className="text-white">Loading...</p>
+            <Spinner />
           ) : errorMessage ? (
             <p className="text-red-500">{errorMessage}</p>
           ) : (
             <ul>
               {movieList.map((movie) => (
-                <p key={movie.id} className="text-white">
-                  {movie.title}
-                </p>
+                <MovieCard key={movie.id} movie={movie} />
               ))}
             </ul>
           )}
