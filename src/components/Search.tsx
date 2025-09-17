@@ -1,11 +1,11 @@
-import type { FC } from "react";
+import type { Dispatch, SetStateAction } from "react";
 
 interface SearchProps {
   searchTerm: string;
-  setSearchTerm: (e: string) => void;
+  setSearchTerm: Dispatch<SetStateAction<string>>;
 }
 
-const Search: FC<SearchProps> = ({ searchTerm, setSearchTerm }) => {
+const Search = ({ searchTerm, setSearchTerm }: SearchProps) => {
   return (
     <div className="search">
       <div>
