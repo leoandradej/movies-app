@@ -28,6 +28,10 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [trendingMovies, setTrendingMovies] = useState<TrendingMovies[]>([]);
+  const [isTrendingMoviesLoading, setIsTrendingMoviesLoading] =
+    useState<boolean>(false);
+  const [trendingMoviesErrorMessage, setTrendingMoviesErrorMessage] =
+    useState<string>("");
 
   //Debounce the search term to prevent too many API requests
   useDebounce(() => setDebouncedSearchTerm(searchTerm), 800, [searchTerm]);
@@ -64,11 +68,18 @@ const App = () => {
   };
 
   const loadTrendingMovies = async () => {
+    setIsTrendingMoviesLoading(true);
+    setTrendingMoviesErrorMessage("");
     try {
       const movies = await getTrendingMovies();
       setTrendingMovies(movies);
     } catch (error) {
       console.error(`Error fetching trending movies: ${error}`);
+      setTrendingMoviesErrorMessage(
+        "Error fetching movies. Please try again later."
+      );
+    } finally {
+      setIsTrendingMoviesLoading(false);
     }
   };
 
@@ -96,14 +107,20 @@ const App = () => {
         {trendingMovies.length > 0 && (
           <section className="trending">
             <h2>Trending Movies</h2>
-            <ul>
-              {trendingMovies.map((movie, index) => (
-                <li key={movie.$id}>
-                  <p>{index + 1}</p>
-                  <img src={movie.poster_url} alt={movie.searchTerm} />
-                </li>
-              ))}
-            </ul>
+            {isTrendingMoviesLoading ? (
+              <Spinner />
+            ) : trendingMoviesErrorMessage ? (
+              <p className="text-red-500">{trendingMoviesErrorMessage}</p>
+            ) : (
+              <ul>
+                {trendingMovies.map((movie, index) => (
+                  <li key={movie.$id}>
+                    <p>{index + 1}</p>
+                    <img src={movie.poster_url} alt={movie.searchTerm} />
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         )}
 
