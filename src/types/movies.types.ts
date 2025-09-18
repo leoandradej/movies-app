@@ -1,3 +1,5 @@
+import type { Models } from "appwrite";
+
 export interface Movie {
   id: number;
   title: string;
@@ -16,4 +18,10 @@ export interface MovieResponse {
 
 export interface MovieCardProps {
   movie: Movie;
+}
+
+export interface TrendingMovies extends Models.Document {
+  count: number;
+  poster_url: string;
+  searchTerm: string;
 }

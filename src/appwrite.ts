@@ -1,5 +1,5 @@
-import { Client, Databases, ID, Query } from "appwrite";
-import type { Movie } from "./types/movies.types";
+import { Client, Databases, ID, Query, type Models } from "appwrite";
+import type { Movie, TrendingMovies } from "./types/movies.types";
 
 const PROJECT_ID = import.meta.env.VITE_APPWRITE_PROJECT_ID;
 const DATABASE_ID = import.meta.env.VITE_APPWRITE_DATABASE_ID;
@@ -37,5 +37,19 @@ export const updateSearchCount = async (searchTerm: string, movie: Movie) => {
     }
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const getTrendingMovies = async (): Promise<TrendingMovies[]> => {
+  try {
+    const result: Models.DocumentList<TrendingMovies> =
+      await database.listDocuments(DATABASE_ID, TABLE_ID, [
+        Query.limit(5),
+        Query.orderDesc("count"),
+      ]);
+    return result.documents;
+  } catch (error) {
+    console.error(error);
+    return [];
   }
 };
